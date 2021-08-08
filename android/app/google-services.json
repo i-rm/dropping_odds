@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "4563036200",
+    "project_id": "dropping-odds-74815",
+    "storage_bucket": "dropping-odds-74815.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:4563036200:android:68bc7034258becd5de6d1d",
+        "android_client_info": {
+          "package_name": "com.i_rm.dropping_odds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "4563036200-ie6dd5uik3v7vqnsugbiuui0tl1n3g0k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHC_xlH-SDAwl00ZoO8HhF6sbw9CpXKPg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "4563036200-ie6dd5uik3v7vqnsugbiuui0tl1n3g0k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
