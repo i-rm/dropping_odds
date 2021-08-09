@@ -1,3 +1,4 @@
+import 'package:dropping_odds/widgets/oddspage/oddcard/bottom_row/coef/coef_args.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:dropping_odds/widgets/oddspage/oddcard/bottom_row/teams/teams.dart';
 import 'package:dropping_odds/widgets/oddspage/oddcard/bottom_row/coef/coef.dart';
@@ -40,13 +41,13 @@ class CardBottomRow extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              flex: 7,
+              flex: 6,
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Coef(
-                      coef: coef,
+                    Drop(
+                      drop: drop,
                     ),
                     GameInfo(
                       location: location,
@@ -56,11 +57,11 @@ class CardBottomRow extends StatelessWidget {
                   ]),
             ),
             Expanded(
-                flex: 3,
+                flex: 4,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Drop(drop: drop, home: home, away: away, location:location, championat:championat,  gameURL:gameURL, sport:sport, eventURL:eventURL, event:event, outcome: outcome,eventCond: eventCond,eventNum:eventNum,),
+                    Coef(coefArgs: CoefArgs(coef: coef,sport: sport,home: home,away: away,location:location,championat:championat,gameURL:gameURL, eventURL:eventURL,event:event,outcome:outcome,eventCond:eventCond,eventNum:eventNum)),
                   ],
                 ))
           ],
