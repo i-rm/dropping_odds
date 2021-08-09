@@ -24,7 +24,7 @@ class Header extends StatefulWidget {
   _HeaderState createState() => _HeaderState();
 }
 
-class _HeaderState extends State<Header> {
+class _HeaderState extends State<Header>{
   // Filter _filter = Filter("All", 1.1, 20);
 
 
@@ -206,6 +206,7 @@ class _HeaderState extends State<Header> {
       ),
     );
   }
+
 
   double _height = 0;
 

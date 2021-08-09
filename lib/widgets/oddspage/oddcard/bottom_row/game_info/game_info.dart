@@ -14,6 +14,7 @@ class GameInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       '${location.toUpperCase().replaceAll("-", " ")}. ${championate.toUpperCase().replaceAll("-", " ")}',
+      overflow: TextOverflow.fade,
       style: TextStyle(
           fontWeight: FontWeight.bold,
           color: Constants.greyColor,

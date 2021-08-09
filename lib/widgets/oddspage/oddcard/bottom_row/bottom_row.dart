@@ -39,6 +39,7 @@ class CardBottomRow extends StatelessWidget {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
               flex: 6,

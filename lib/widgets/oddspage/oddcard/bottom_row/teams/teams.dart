@@ -17,7 +17,7 @@ class Teams extends StatelessWidget {
         child: Text(
             '$home - $away',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: Constants.homeAwayFontSize),
-            overflow: TextOverflow.ellipsis,
+            overflow: TextOverflow.fade,
           ),
       ),
     );
