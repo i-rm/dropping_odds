@@ -25,9 +25,6 @@ class Header extends StatefulWidget {
 }
 
 class _HeaderState extends State<Header>{
-  // Filter _filter = Filter("All", 1.1, 20);
-
-
   void reset(String name) {
     widget.btns.forEach((btn) {
       if (btn.name == name) {
@@ -56,7 +53,7 @@ class _HeaderState extends State<Header>{
           backgroundColor: Constants.blueColor,
           onPressed: () {
             setState(() {
-              this.widget.filter.drop += 1;
+              this.widget.filter.drop += 5;
             });
             reset(this.widget.filter.sport);
           },
@@ -83,7 +80,7 @@ class _HeaderState extends State<Header>{
           backgroundColor: Constants.blueColor,
           onPressed: () {
             setState(() {
-              this.widget.filter.drop -= 1;
+              this.widget.filter.drop -= 5;
               if (this.widget.filter.drop < 21) {
                 this.widget.filter.drop = 20;
               }
@@ -113,7 +110,11 @@ class _HeaderState extends State<Header>{
           backgroundColor: Constants.blueColor,
           onPressed: () {
             setState(() {
-              this.widget.filter.odds += 0.1;
+              if (this.widget.filter.odds == 1.1){
+                this.widget.filter.odds += 0.4;
+              } else {
+                this.widget.filter.odds += 0.5;
+              }
               reset(this.widget.filter.sport);
             });
           },
@@ -140,7 +141,7 @@ class _HeaderState extends State<Header>{
           backgroundColor: Constants.blueColor,
           onPressed: () {
             setState(() {
-              this.widget.filter.odds -= 0.1;
+              this.widget.filter.odds -= 0.5;
               if (this.widget.filter.odds < 1.2) {
                 this.widget.filter.odds = 1.1;
               }

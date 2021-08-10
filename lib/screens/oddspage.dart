@@ -17,7 +17,7 @@ class OddsPage extends StatefulWidget {
 }
 
 class _OddsPageState extends State<OddsPage> {
-  TextEditingController? controller;
+  // TextEditingController? controller;
   ClientRequest req = ClientRequest();
   List<Odd> odds=[];
 
@@ -25,7 +25,7 @@ class _OddsPageState extends State<OddsPage> {
   void initState() {
     super.initState();
     odds = [];
-    controller = TextEditingController();
+    // controller = TextEditingController();
   }
 
   @override
