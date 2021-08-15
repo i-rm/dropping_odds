@@ -1,13 +1,15 @@
 import 'package:dropping_odds/constants.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 
 class Drop extends StatelessWidget {
   const Drop({
-    required this.drop,
+    required this.drop,required this.noted,
   }) : super();
 
   final String drop;
+  final bool noted;
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +18,7 @@ class Drop extends StatelessWidget {
       child: Text(
         "Drop: " + drop + "%",
         style: TextStyle(
+            color: noted ? Colors.white : Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: Constants.eventFontSize),
       ),

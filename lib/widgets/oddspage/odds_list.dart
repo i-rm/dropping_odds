@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:dropping_odds/proto/message.pb.dart';
 import 'package:dropping_odds/widgets/oddspage/header/header.dart';
@@ -18,35 +19,37 @@ class OddsList extends StatefulWidget {
 }
 
 class _OddsListState extends State<OddsList> {
-  Filter _filter = Filter("All", 1.1, 20);
+  // Filter for Header
+  Filter _filter = Filter("All", 1.1, 20, false);
+  // Length of  rendered odds (without noted)
   int _length = 0;
-  List<Btn> _btns = [
-    Btn("All", Icons.all_inbox, 0),
-    Btn("Soccer", Icons.sports_soccer_outlined, 0),
-    Btn("Football", Icons.sports_football_outlined, 0),
-    Btn("Basketball", Icons.sports_basketball_outlined, 0),
-    Btn("Tennis", Icons.sports_tennis_outlined, 0),
-    Btn("Hockey", Icons.sports_hockey_outlined, 0),
-    Btn("Cricket", Icons.sports_cricket_outlined, 0),
-    Btn("Baseball", Icons.sports_baseball_outlined, 0),
-    Btn("Esports", Icons.sports_esports_outlined, 0),
-    Btn("Handball", Icons.sports_handball_outlined, 0),
-    Btn("Rugby", Icons.sports_rugby_outlined, 0),
-    Btn("Rugby-union", Icons.sports_rugby_outlined, 0),
-    Btn("Badminton", Icons.access_time, 0),
-    Btn("Volleyball", Icons.sports_volleyball_outlined, 0),
-    Btn("Beach-volleyball", Icons.sports_volleyball_outlined, 0),
-    Btn("MMA", Icons.sports_mma_outlined, 0),
-  ];
+  // Buttons for the Header
+  List<Btn> _btns = Constants().btns;
+  // List of notificated game.url + event.url
+  List<String> _urls = [];
+  // List of notificated odds
+  List<Odd> _notedOdds = [];
+
+  // For Header to change filter settings
   void callback(Filter filter) {
-    print("Callback");
     setState(() {
       this._filter = filter;
       countSports();
     });
   }
 
+  //For Coef to delete odd and url from relative lists after clicking Coef
+  void deleteNotedCallBackForCoef(String url){
+    setState(() {
+      for(var n in _notedOdds) print((n.game.url+n.event.url) == url);
+      _notedOdds.removeWhere((element) => (element.game.url+element.event.url) == url);
+      _urls.removeWhere((element) => element == url);
+    });
+  }
+
+  // Counts how many every sport has presented events
   void countSports() {
+
     for (var b in _btns) {
       b.count = 0;
       if (b.name == "All") {
@@ -61,15 +64,50 @@ class _OddsListState extends State<OddsList> {
       }
     }
   }
-
-  // @override
-  void initState() {
+  late FirebaseMessaging messaging;
+  @override
+  void initState(){
     super.initState();
     countSports();
+    messaging = FirebaseMessaging.instance;
+    messaging.getToken().then((value) => print(value));
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      //
+      setState(() {
+        if(_urls.contains(event.data["url"])) _urls.removeWhere((element) => element == event.data["url"]);
+        _urls.insert(0, event.data["url"]);
+      });
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Notification"),
+              content: Text(event.notification!.body!),
+              actions: [
+                TextButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked! ${message.data['url']}');
+      setState(() {
+        if(_urls.contains(message.data["url"])) _urls.removeWhere((element) => element == message.data["url"]);
+        _urls.insert(0, message.data["url"]);
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+
     List<Odd>  _odds = widget.odds
           .where((element) =>
               (((_filter.sport == "All") || (element.game.sport == _filter.sport.toLowerCase())) &&
@@ -77,14 +115,24 @@ class _OddsListState extends State<OddsList> {
                       this._filter.odds) &&
                   (int.parse(element.event.drop) >= this._filter.drop)))
           .toList();
-    // }
+    for (var n = 0; n < _urls.length; n++) {
+      var i = _odds.indexWhere((note) => (note.game.url+note.event.url) == _urls[n]);
+      if (i != -1){
+        String _url = _urls[n];
+        _notedOdds.removeWhere((element) => (element.game.url+element.event.url) == _url);
+        _notedOdds.add(_odds[i]);
+      }
+    }
+
+
     this._length = _odds.length;
 
     return Center(
       child: ListView(
         children: [
           Header(this.callback, this._filter, this._length, this._btns),
-          for (var odd in _odds) OddCard(odd: odd)
+          for (var notedOdd in _notedOdds) OddCard(odd: notedOdd, noted: true, callback: this.deleteNotedCallBackForCoef,),
+          for (var odd in _odds) OddCard(odd: odd, noted: false, callback: this.deleteNotedCallBackForCoef)
         ],
       ),
     );

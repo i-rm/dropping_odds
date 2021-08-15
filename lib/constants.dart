@@ -15,6 +15,25 @@ class Constants {
   static const teamsWidt = 60.0;
   static const homeAwayFontSize = 15.0;
   static const eventFontSize = 12.0;
+
+  List<Btn> btns = [
+    Btn("All", Icons.all_inbox, 0),
+    Btn("Soccer", Icons.sports_soccer_outlined, 0),
+    Btn("Football", Icons.sports_football_outlined, 0),
+    Btn("Basketball", Icons.sports_basketball_outlined, 0),
+    Btn("Tennis", Icons.sports_tennis_outlined, 0),
+    Btn("Hockey", Icons.sports_hockey_outlined, 0),
+    Btn("Cricket", Icons.sports_cricket_outlined, 0),
+    Btn("Baseball", Icons.sports_baseball_outlined, 0),
+    Btn("Esports", Icons.sports_esports_outlined, 0),
+    Btn("Handball", Icons.sports_handball_outlined, 0),
+    Btn("Rugby", Icons.sports_rugby_outlined, 0),
+    Btn("Rugby-union", Icons.sports_rugby_outlined, 0),
+    Btn("Badminton", Icons.access_time, 0),
+    Btn("Volleyball", Icons.sports_volleyball_outlined, 0),
+    Btn("Beach-volleyball", Icons.sports_volleyball_outlined, 0),
+    Btn("MMA", Icons.sports_mma_outlined, 0),
+  ];
 }
 
 class Btn {
@@ -23,3 +42,4 @@ class Btn {
   int count;
   Btn(this.name, this.icon, this.count);
 }
+

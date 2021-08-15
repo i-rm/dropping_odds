@@ -8,12 +8,12 @@ class Filter {
   String sport;
   double odds;
   int drop;
-  Filter(this.sport, this.odds, this.drop);
+  bool checked;
+  Filter(this.sport, this.odds, this.drop, this.checked);
 }
 
 class Header extends StatefulWidget {
   final Function callback;
-
   final int length;
   final List<Btn> btns;
   Header(this.callback, this.filter, this.length, this.btns);
@@ -25,6 +25,7 @@ class Header extends StatefulWidget {
 }
 
 class _HeaderState extends State<Header>{
+  bool _checkbox =  false;
   void reset(String name) {
     widget.btns.forEach((btn) {
       if (btn.name == name) {
@@ -208,6 +209,37 @@ class _HeaderState extends State<Header>{
     );
   }
 
+  Widget _checkNotifications() {
+    return Container(
+      decoration: this.widget.filter.checked ? BoxDecoration() : BoxDecoration(
+          border: Border.all(color: Constants.redColor, width: 2.0),
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+      ),
+      width: 35.0,
+      height: 35.0,
+      child: FittedBox(
+        child: FloatingActionButton(
+
+          heroTag: "btn7",
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0))
+          ),
+          child: Icon(
+            Icons.done,
+            color: this.widget.filter.checked ? Colors.white : Constants.bgColor,
+            size: 35.0,
+          ),
+          backgroundColor: this.widget.filter.checked ? Constants.redColor : Constants.bgColor,
+          onPressed: () {
+            setState(() {
+              this.widget.filter.checked = ! this.widget.filter.checked;
+            });
+          },
+        ),
+      ),
+    );
+  }
+
 
   double _height = 0;
 
@@ -272,71 +304,92 @@ class _HeaderState extends State<Header>{
               shape: CircleBorder(),
               onPressed: () {
                 setState(() {
-                  _height = (_height == 0) ? 100 : 0;
+                  _height = (_height == 0) ? 150 : 0;
                 });
               }),
         ]),
         AnimatedContainer(
           margin: EdgeInsets.symmetric(vertical: 15.0, horizontal: Constants.indent),
 
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                children: [
-                  Expanded(child: Center(child: Text("Min drop", style: TextStyle( fontSize: 20.0,fontWeight: FontWeight.w300,),))),
-                  Expanded(child: Center(child: Text("Min odds", style: TextStyle( fontSize: 20.0,fontWeight: FontWeight.w300,)))),
-                ],
-              ),
-              Row(
-                children:[
-                  Column(
-                    children: [
-                      Expanded(child: _decrementDrop()),
-                      Expanded(child: _decrementOdds()),
-                    ],
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: Text(
-                              '${this.widget.filter.drop}',
-                              style: TextStyle(fontSize: 18.0),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text(
-                              '${num.parse(this.widget.filter.odds.toStringAsFixed(2))}',
-                              style: TextStyle(fontSize: 18.0),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      Expanded(child: _incrementDrop()),
-                      Expanded(child: _incrementOdds()),
-                    ],
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 10.0),
-                    child: Column(
-                      children: [
-                        Expanded(child: _clearDrop()),
-                        Expanded(child: _clearOdds()),
-                      ],
-                    ),
-                  )]
-              )
 
+          child: Column(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        Expanded(child: Center(child: Text("Min drop", style: TextStyle( fontSize: 20.0,fontWeight: FontWeight.w300,),))),
+                        Expanded(child: Center(child: Text("Min odds", style: TextStyle( fontSize: 20.0,fontWeight: FontWeight.w300,)))),
+                      ],
+                    ),
+                    Row(
+                      children:[
+                        Column(
+                          children: [
+                            Expanded(child: _decrementDrop()),
+                            Expanded(child: _decrementOdds()),
+                          ],
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    '${this.widget.filter.drop}',
+                                    style: TextStyle(fontSize: 18.0),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    '${num.parse(this.widget.filter.odds.toStringAsFixed(2))}',
+                                    style: TextStyle(fontSize: 18.0),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Expanded(child: _incrementDrop()),
+                            Expanded(child: _incrementOdds()),
+                          ],
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 10.0),
+                          child: Column(
+                            children: [
+                              Expanded(child: _clearDrop()),
+                              Expanded(child: _clearOdds()),
+                            ],
+                          ),
+                        )]
+                    )
+
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  // margin: EdgeInsets.only(top: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Notifications",style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300),),
+
+                      Container(child: _checkNotifications())
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
           // color: Colors.red,

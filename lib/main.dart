@@ -29,6 +29,5 @@ Future<void> main() async {
       ?.createNotificationChannel(channel);
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  runApp(MaterialApp(home: MyApp()));
+  runApp(MyApp());
 }

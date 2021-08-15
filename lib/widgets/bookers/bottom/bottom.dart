@@ -23,9 +23,6 @@ class Bottom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(this.isLoading);
-    print(this.exists);
-    print(this.noOdds);
     return isLoading
           ? Center(
         child: CircularProgressIndicator(),

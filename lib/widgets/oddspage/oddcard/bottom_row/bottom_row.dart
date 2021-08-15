@@ -9,6 +9,8 @@ import 'game_info/game_info.dart';
 class CardBottomRow extends StatelessWidget {
   const CardBottomRow(
       {
+        required this.callback,
+        required this.noted,
       required this.home,
       required this.away,
       required this.location,
@@ -26,7 +28,8 @@ class CardBottomRow extends StatelessWidget {
       : super();
 
   final String home, away, location, championat, drop, gameURL, sport, eventURL, event, outcome, eventCond, eventNum, coef;
-
+  final bool noted;
+  final Function callback;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,7 +37,7 @@ class CardBottomRow extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Teams(home: home, away: away),
+            Teams(home: home, away: away, noted: noted),
           ],
         ),
         Row(
@@ -48,9 +51,11 @@ class CardBottomRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Drop(
+                      noted: noted,
                       drop: drop,
                     ),
                     GameInfo(
+                      noted: noted,
                       location: location,
                       championate: championat,
                     ),
@@ -62,7 +67,7 @@ class CardBottomRow extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Coef(coefArgs: CoefArgs(coef: coef,sport: sport,home: home,away: away,location:location,championat:championat,gameURL:gameURL, eventURL:eventURL,event:event,outcome:outcome,eventCond:eventCond,eventNum:eventNum)),
+                    Coef(coefArgs: CoefArgs(callback: this.callback,coef: coef,sport: sport,home: home,away: away,location:location,championat:championat,gameURL:gameURL, eventURL:eventURL,event:event,outcome:outcome,eventCond:eventCond,eventNum:eventNum)),
                   ],
                 ))
           ],
