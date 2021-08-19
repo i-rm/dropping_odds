@@ -12,6 +12,20 @@ class Sport extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String _sport = sport;
+    if(sport.contains("american-football")){
+      _sport = "A. football";
+    } else if (sport == "rugby-league"){
+      _sport = "Rugby L.";
+    } else if (sport == "rugby-union") {
+      _sport = "Rugby U.";
+    } else if (sport == "water-polo") {
+      _sport = "Water polo";
+    } else if (sport == "beach-volleyball") {
+      _sport = "Beach Voll.";
+    } else if (sport == "mma") {
+      _sport = "MMA";
+    }
     return Container(
       width: Constants.sportWidth,
       alignment: Alignment.center,
@@ -21,7 +35,7 @@ class Sport extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       child: Text(
-        '${sport[0].toUpperCase()}${sport.substring(1)}',
+        '${_sport[0].toUpperCase()}${_sport.substring(1)}',
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.bold,

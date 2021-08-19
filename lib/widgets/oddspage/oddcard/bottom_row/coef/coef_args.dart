@@ -1,5 +1,4 @@
 class CoefArgs {
-  final Function callback;
   final String coef,
   sport,
   home,
@@ -14,7 +13,6 @@ class CoefArgs {
   eventNum;
 
   CoefArgs({
-    required this.callback,
    required this.coef,
    required this.sport,
    required this.home,

@@ -19,7 +19,6 @@ class Coef extends StatelessWidget {
       ),
       child: MaterialButton(
         onPressed: () {
-          coefArgs.callback(coefArgs.gameURL+coefArgs.eventURL);
           Navigator.pushNamed(context, route.bookers,
               arguments: BookersArguments(
                   coefArgs.home,

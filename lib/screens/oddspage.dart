@@ -1,3 +1,4 @@
+import 'package:dropping_odds/models/notice_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -6,6 +7,7 @@ import 'package:dropping_odds/proto/message.pb.dart';
 import 'package:dropping_odds/proto/service.pb.dart';
 import 'package:dropping_odds/service/client_service.dart';
 import 'package:dropping_odds/widgets/oddspage/odds_list.dart';
+import 'package:provider/provider.dart';
 
 
 class OddsPage extends StatefulWidget {
@@ -17,15 +19,12 @@ class OddsPage extends StatefulWidget {
 }
 
 class _OddsPageState extends State<OddsPage> {
-  // TextEditingController? controller;
   ClientRequest req = ClientRequest();
   List<Odd> odds=[];
 
   @override
   void initState() {
     super.initState();
-    odds = [];
-    // controller = TextEditingController();
   }
 
   @override
@@ -49,7 +48,12 @@ class _OddsPageState extends State<OddsPage> {
                     return int.parse(a.event.drop)
                         .compareTo(int.parse(b.event.drop));
                   });
-                  return OddsList(odds: odds);
+                  return Consumer<noticeModel>(
+                    builder: (context, notice, child){
+                      return OddsList(odds: odds, notice: notice);
+                    },
+                  );
+
                 },
               )),
             ],

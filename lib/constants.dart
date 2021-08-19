@@ -28,10 +28,11 @@ class Constants {
     Btn("Esports", Icons.sports_esports_outlined, 0),
     Btn("Handball", Icons.sports_handball_outlined, 0),
     Btn("Rugby", Icons.sports_rugby_outlined, 0),
-    Btn("Rugby-union", Icons.sports_rugby_outlined, 0),
     Btn("Badminton", Icons.access_time, 0),
+    Btn("Snooker", Icons.access_time, 0),
     Btn("Volleyball", Icons.sports_volleyball_outlined, 0),
-    Btn("Beach-volleyball", Icons.sports_volleyball_outlined, 0),
+    Btn("Beach-volleyball", Icons.access_time, 0),
+    Btn("Water-polo", Icons.access_time, 0),
     Btn("MMA", Icons.sports_mma_outlined, 0),
   ];
 }

@@ -1,12 +1,14 @@
 import 'dart:core';
 import 'dart:io';
 
+import 'package:dropping_odds/models/notice_model.dart';
 import 'package:dropping_odds/widgets/bookers/bookers_arguments.dart';
 import 'package:dropping_odds/widgets/bookers/bottom/bottom.dart';
 import 'package:dropping_odds/widgets/bookers/match/match.dart';
 import 'package:dropping_odds/widgets/bookers/sport_champ/sport_champ.dart';
 import 'package:dropping_odds/widgets/bookers/parse_response.dart' as pr;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:dropping_odds/scripts/js.dart' as js;
 
@@ -15,7 +17,8 @@ import '../utils.dart';
 
 class BookersPage extends StatefulWidget {
   final BookersArguments args;
-  const BookersPage({required this.args}) : super();
+  final noticeModel notice;
+  const BookersPage({required this.args, required this.notice}) : super();
 
   @override
   _BookersPageState createState() => _BookersPageState();
@@ -44,8 +47,14 @@ class _BookersPageState extends State<BookersPage> {
           this.widget.args.eventURL;
     }
 
+    void dropURL() async {
+      final String url = this.widget.args.gameURL+this.widget.args.eventURL;
+      Provider.of<noticeModel>(context, listen: false).removeURL(url);
+      Provider.of<noticeModel>(context, listen: false).removeURLFromShared_preferences(url);
+    }
   void readJS() async {
     String j = await _controller.evaluateJavascript(js.js);
+
     pr.ParseResp p = pr.ParseResp.fromRawJson(j);
     setState(() {
       this._tableData = p;
@@ -286,6 +295,7 @@ class _BookersPageState extends State<BookersPage> {
                       _controller = controller;
                     },
                     onProgress: (int progress) {
+                      dropURL();
                       print("webview is loading (progress: $progress%)");
                     },
                     onPageStarted: (String url) {

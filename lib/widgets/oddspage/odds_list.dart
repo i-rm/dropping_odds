@@ -5,45 +5,36 @@ import 'package:dropping_odds/widgets/oddspage/header/header.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dropping_odds/widgets/oddspage/oddcard/odd_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
+import '../../models/notice_model.dart';
 
 class OddsList extends StatefulWidget {
   const OddsList({
-    required this.odds,
+    required this.odds, required this.notice,
   }) : super();
 
   final List<Odd> odds;
+  final noticeModel notice;
 
   @override
   _OddsListState createState() => _OddsListState();
 }
 
-class _OddsListState extends State<OddsList> {
+class _OddsListState extends State<OddsList> with WidgetsBindingObserver {
   // Filter for Header
   Filter _filter = Filter("All", 1.1, 20, false);
   // Length of  rendered odds (without noted)
   int _length = 0;
   // Buttons for the Header
   List<Btn> _btns = Constants().btns;
-  // List of notificated game.url + event.url
-  List<String> _urls = [];
-  // List of notificated odds
-  List<Odd> _notedOdds = [];
+
 
   // For Header to change filter settings
   void callback(Filter filter) {
     setState(() {
       this._filter = filter;
       countSports();
-    });
-  }
-
-  //For Coef to delete odd and url from relative lists after clicking Coef
-  void deleteNotedCallBackForCoef(String url){
-    setState(() {
-      for(var n in _notedOdds) print((n.game.url+n.event.url) == url);
-      _notedOdds.removeWhere((element) => (element.game.url+element.event.url) == url);
-      _urls.removeWhere((element) => element == url);
     });
   }
 
@@ -58,25 +49,41 @@ class _OddsListState extends State<OddsList> {
     }
     for (var odd in widget.odds) {
       for (var sp in _btns) {
-        if (odd.game.sport == sp.name.toLowerCase()) {
+        if (odd.game.sport.contains(sp.name.toLowerCase())) {
           sp.count++;
         }
       }
     }
   }
+
+  Future<void> loadURLS() async {
+    final prefs = await SharedPreferences.getInstance();
+    final urls = prefs.getString('urls') ?? 0;
+    final urlsArr = urls.toString().split("<=>");
+    urlsArr.forEach((element) {this.widget.notice.addURL(element);});
+  }
+
+
   late FirebaseMessaging messaging;
+
   @override
   void initState(){
     super.initState();
+    loadURLS();
+    WidgetsBinding.instance!.addObserver(this);
     countSports();
+
+
     messaging = FirebaseMessaging.instance;
     messaging.getToken().then((value) => print(value));
 
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
       //
       setState(() {
-        if(_urls.contains(event.data["url"])) _urls.removeWhere((element) => element == event.data["url"]);
-        _urls.insert(0, event.data["url"]);
+        // If url exists already - drop it
+        if(widget.notice.urls.contains(event.data["url"])) widget.notice.removeURL(event.data["url"]);
+        //Add url to model
+        widget.notice.addURL(event.data["url"]);
       });
       showDialog(
           context: context,
@@ -95,31 +102,58 @@ class _OddsListState extends State<OddsList> {
             );
           });
     });
+  }
 
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Message clicked! ${message.data['url']}');
-      setState(() {
-        if(_urls.contains(message.data["url"])) _urls.removeWhere((element) => element == message.data["url"]);
-        _urls.insert(0, message.data["url"]);
-      });
-    });
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.paused:
+        print("paused state");
+        break;
+      case AppLifecycleState.resumed:
+        final prefs = await SharedPreferences.getInstance();
+        final urls = prefs.getString('urls') ?? 0;
+        final urlsArr = urls.toString().split("<=>");
+        urlsArr.forEach((element) {this.widget.notice.addURL(element);});
+        print("resumed state");
+        break;
+      case AppLifecycleState.detached:
+        print("detached state");
+        break;
+      case AppLifecycleState.inactive:
+        print("inactive state");
+        break;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
-    List<Odd>  _odds = widget.odds
+    // List of notificated odds
+    List<Odd> _notedOdds = [];
+    List<Odd> _odds = widget.odds
           .where((element) =>
-              (((_filter.sport == "All") || (element.game.sport == _filter.sport.toLowerCase())) &&
+              (((_filter.sport == "All") || (element.game.sport.contains(_filter.sport.toLowerCase()))) &&
                   (double.parse(element.event.outcomeCoefficient) >=
                       this._filter.odds) &&
                   (int.parse(element.event.drop) >= this._filter.drop)))
           .toList();
-    for (var n = 0; n < _urls.length; n++) {
-      var i = _odds.indexWhere((note) => (note.game.url+note.event.url) == _urls[n]);
+    //Loop throw model urls
+    for (var n = 0; n < widget.notice.urls.length; n++) {
+      // search url in odds
+      var i = _odds.indexWhere((note) => (note.game.url+note.event.url) == widget.notice.urls[n]);
+      // If found
       if (i != -1){
-        String _url = _urls[n];
+        String _url = widget.notice.urls[n];
+        // Drop from notedOdds if exists
         _notedOdds.removeWhere((element) => (element.game.url+element.event.url) == _url);
+        // Add to end
         _notedOdds.add(_odds[i]);
       }
     }
@@ -128,11 +162,12 @@ class _OddsListState extends State<OddsList> {
     this._length = _odds.length;
 
     return Center(
+
       child: ListView(
         children: [
           Header(this.callback, this._filter, this._length, this._btns),
-          for (var notedOdd in _notedOdds) OddCard(odd: notedOdd, noted: true, callback: this.deleteNotedCallBackForCoef,),
-          for (var odd in _odds) OddCard(odd: odd, noted: false, callback: this.deleteNotedCallBackForCoef)
+          for (var notedOdd in _notedOdds) OddCard(odd: notedOdd, noted: true,),
+          for (var odd in _odds) OddCard(odd: odd, noted: false)
         ],
       ),
     );

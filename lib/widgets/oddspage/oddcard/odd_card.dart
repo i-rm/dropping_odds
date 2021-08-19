@@ -7,15 +7,19 @@ import '../../../constants.dart';
 import 'bottom_row/bottom_row.dart';
 
 class OddCard extends StatelessWidget {
-  final Function callback;
-  const OddCard({required this.odd, required this.noted, required this.callback}) : super();
+  const OddCard({required this.odd, required this.noted}) : super();
 
   final Odd odd;
   final bool noted;
 
   @override
   Widget build(BuildContext context) {
+    // print(odd.game.url+odd.event.url);
     return Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+
         margin: EdgeInsets.only(
             bottom: Constants.indent,
             left: Constants.indent,
@@ -24,14 +28,19 @@ class OddCard extends StatelessWidget {
           decoration: noted ? BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                const Color(0xFFCC1134),
-                const Color(0xFF5F05D7),
+                const Color(0xFF36CF7E),
+                const Color(0xFF5619B9),
               ],
+              // colors: [
+              //   const Color(0xFFCC1134),
+              //   const Color(0xFF5F05D7),
+              // ],
               begin: const FractionalOffset(0.0, 0.0),
               end: const FractionalOffset(1.0, 0.0),
               stops: [0.0, 1.0],
               tileMode: TileMode.clamp,
             ),
+            borderRadius: BorderRadius.circular(5),
           ) : BoxDecoration(),
           padding: EdgeInsets.all(Constants.indent),
           child: Column(
@@ -40,7 +49,6 @@ class OddCard extends StatelessWidget {
               CardTopRow(
                   sport: odd.game.sport, d: odd.game.date, t: odd.game.time),
               CardBottomRow(
-                callback: this.callback,
                 noted: noted,
                 home: odd.game.homeTeam,
                 away: odd.game.awayTeam,
